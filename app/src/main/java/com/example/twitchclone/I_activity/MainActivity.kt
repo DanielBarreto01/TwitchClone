@@ -1,18 +1,16 @@
-package com.example.twitchclone
+package com.example.twitchclone.I_activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.GridLayout
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.twitchclone.R
+import com.example.twitchclone.data.Transmission
+import com.example.twitchclone.rv_activity.RecyclerViewActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -21,8 +19,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var llPostsChannels: GridLayout
     private lateinit var llCategorys: LinearLayout
     private lateinit var BottomNa: BottomNavigationView
-
-    //private lateinit var recyclerView: RecyclerView
 
     private val postList = arrayListOf<Transmission>()
 
@@ -34,8 +30,38 @@ class MainActivity : AppCompatActivity() {
         initViews()
         fillPostList()
         addPostsToLL()
-        //initrecyclerView()
+        initMenu()
 
+    }
+
+    private fun initMenu() {
+        BottomNa.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    showToast("Home selected")
+                    true
+                }
+                R.id.navigation_add -> {
+                    val intent = Intent(this, RecyclerViewActivity::class.java)
+                    startActivity(intent)
+                    showToast("Recycler view")
+                    true
+                }
+                R.id.navigation_activity -> {
+                    showToast("Activity selected")
+                    true
+                }
+                R.id.navigation_explore -> {
+                    showToast("Explore selected")
+                    true
+                }
+                R.id.navigation_profile -> {
+                    showToast("Profile selected")
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun fillPostList() {
@@ -49,17 +75,48 @@ class MainActivity : AppCompatActivity() {
             "MontanaBlack88", "loltyler1"
         )
         val imageResIds = listOf(
-            R.drawable.ninja, R.drawable.ibai, R.drawable.auronplay, R.drawable.rubius,
-            R.drawable.kaicenat, R.drawable.xqc, R.drawable.thegrefg, R.drawable.tfue,
-            R.drawable.juansguarnizo, R.drawable.shroud, R.drawable.elmariana, R.drawable.elspreen,
-            R.drawable.pokimane, R.drawable.sodapoppin, R.drawable.clix, R.drawable.heelmike,
-            R.drawable.tommyinnit, R.drawable.myth, R.drawable.adinross, R.drawable.alanzoka,
-            R.drawable.sypherpk, R.drawable.timthetatman, R.drawable.arigameplays, R.drawable.mongraal,
-            R.drawable.riotgames, R.drawable.nickmercs, R.drawable.quackity, R.drawable.eslcs,
-            R.drawable.summit1g, R.drawable.amouranth, R.drawable.dream, R.drawable.rivers_gg,
-            R.drawable.jynxzi, R.drawable.fortnite, R.drawable.robleis, R.drawable.elded,
-            R.drawable.loud_coringa, R.drawable.bugha, R.drawable.moistcr1tikal, R.drawable.nickeh30,
-            R.drawable.montanablack88, R.drawable.loltyler1
+            R.drawable.ninja,
+            R.drawable.ibai,
+            R.drawable.auronplay,
+            R.drawable.rubius,
+            R.drawable.kaicenat,
+            R.drawable.xqc,
+            R.drawable.thegrefg,
+            R.drawable.tfue,
+            R.drawable.juansguarnizo,
+            R.drawable.shroud,
+            R.drawable.elmariana,
+            R.drawable.elspreen,
+            R.drawable.pokimane,
+            R.drawable.sodapoppin,
+            R.drawable.clix,
+            R.drawable.heelmike,
+            R.drawable.tommyinnit,
+            R.drawable.myth,
+            R.drawable.adinross,
+            R.drawable.alanzoka,
+            R.drawable.sypherpk,
+            R.drawable.timthetatman,
+            R.drawable.arigameplays,
+            R.drawable.mongraal,
+            R.drawable.riotgames,
+            R.drawable.nickmercs,
+            R.drawable.quackity,
+            R.drawable.eslcs,
+            R.drawable.summit1g,
+            R.drawable.amouranth,
+            R.drawable.dream,
+            R.drawable.rivers_gg,
+            R.drawable.jynxzi,
+            R.drawable.fortnite,
+            R.drawable.robleis,
+            R.drawable.elded,
+            R.drawable.loud_coringa,
+            R.drawable.bugha,
+            R.drawable.moistcr1tikal,
+            R.drawable.nickeh30,
+            R.drawable.montanablack88,
+            R.drawable.loltyler1
         )
         for (i in titles.indices) {
             postList.add(Transmission(imageResIds[i], titles[i]))
@@ -84,22 +141,6 @@ class MainActivity : AppCompatActivity() {
             llPostsChannels.addView(postView, params)
         }
     }
-
-   /* private fun getTransmissions(): List<Transmission> {
-        val transmissions = mutableListOf<Transmission>()
-        val imageResId = R.drawable.special_event
-        for (i in 1..100) { // Adjust the range for the desired number of items
-            transmissions.add(Transmission(imageResId, "Title $i"))
-        }
-        return transmissions
-    }
-    
-    private fun initrecyclerView() {
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
-        recyclerView.adapter = TransmissionAdapter(getTransmissions())
-    }*/
-
 
     private fun initViews() {
         llPosts = findViewById(R.id.linearLayoutHeader)
