@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TwitchClone</string>
+    <string name="categor_as">Categorías</string>
+    <string name="image_button">Image button</string>
+</resources>
