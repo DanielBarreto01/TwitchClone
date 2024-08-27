@@ -1,18 +1,16 @@
 package com.example.twitchclone
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.GridLayout
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.twitchclone.data.Transmission
+import com.example.twitchclone.rv_activity.RecyclerViewActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         initViews()
         fillPostList()
         addPostsToLL()
-        //initrecyclerView()
 
     }
 
@@ -106,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         llCategorys = findViewById(R.id.linearLayoutFilters)
         BottomNa = findViewById(R.id.bottomNavigationView)
         llPostsChannels = findViewById(R.id.linearLayoutChannels)
+
     }
     private fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this, message, duration).show()
