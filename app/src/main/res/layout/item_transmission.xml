@@ -10,8 +10,7 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:contentDescription="Transmission Image"
-        android:src="@drawable/special_event" />
+        android:contentDescription="Transmission Image" />
 
     <TextView
         android:id="@+id/textView"
