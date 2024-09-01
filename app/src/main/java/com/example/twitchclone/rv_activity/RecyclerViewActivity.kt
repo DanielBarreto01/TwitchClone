@@ -47,7 +47,7 @@ class RecyclerViewActivity : AppCompatActivity() {
             if (!uiState.isListActive) {
                 showToast("List deactivated for ${uiState.deactivationTime} seconds")
             } else {
-                showToast("List reactivated")
+                showToast("Active list")
             }
         }
     }
