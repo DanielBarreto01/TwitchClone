@@ -1,39 +1,45 @@
 package com.example.twitchclone.rv_activity.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.twitchclone.R
+import com.example.twitchclone.databinding.ItemTransmissionBinding
 import com.example.twitchclone.data.Transmission
+import com.example.twitchclone.rv_activity.RecyclerViewActivity
 import com.example.twitchclone.utils.showToast
 
-class RVAdapterPosts(private val posts: List<Transmission>) :
-    RecyclerView.Adapter<RVAdapterPosts.PostViewHolder>() {
+class RVAdapterPosts(
+    private val posts: List<Transmission>,
+    private val activity: RecyclerViewActivity
+) : RecyclerView.Adapter<RVAdapterPosts.PostViewHolder>() {
 
-    class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvUserName: TextView = view.findViewById(R.id.textView)
-        val imageView: ImageView = view.findViewById(R.id.imageView)
-        val imageButtonChannel: ImageButton = view.findViewById(R.id.imageButtonChannel)
-    }
+    inner class PostViewHolder(private val binding: ItemTransmissionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val postView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_transmission, parent, false)
-        return PostViewHolder(postView)
-    }
-
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.tvUserName.text = posts[position].title
-        holder.imageView.setImageResource(posts[position].imageResId)
-        holder.imageButtonChannel.setOnClickListener {
-            it.context.showToast("Channel button clicked for ${posts[position].title}")
+        fun bind(transmission: Transmission) {
+            binding.textView.text = transmission.title
+            binding.imageView.setImageResource(transmission.imageResId)
+            binding.imageButtonChannel.setOnClickListener {
+                val message = it.context.getString(R.string.channel_button_clicked, transmission.title)
+                it.context.showToast(message)
+            }
+            binding.buttonClose.setOnClickListener {
+                activity.disableListForSeconds(3)
+            }
         }
     }
 
-    override fun getItemCount(): Int = posts.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+        val binding = ItemTransmissionBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return PostViewHolder(binding)
+    }
 
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        holder.bind(posts[position])
+    }
+
+    override fun getItemCount(): Int = posts.size
 }

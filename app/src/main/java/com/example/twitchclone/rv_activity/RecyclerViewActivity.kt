@@ -1,59 +1,65 @@
 package com.example.twitchclone.rv_activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.twitchclone.R
-import com.example.twitchclone.data.Transmission
 import com.example.twitchclone.rv_activity.adapters.RVAdapterPosts
+import com.example.twitchclone.utils.showToast
 
 class RecyclerViewActivity : AppCompatActivity() {
 
     private lateinit var rvPosts: RecyclerView
-    private val postList = arrayListOf<Transmission>()
+    private lateinit var viewModel: TransmissionViewModel
+    private lateinit var loadingIndicator: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_view)
+        viewModel = ViewModelProvider(this).get(TransmissionViewModel::class.java)
         initializeView()
-        fillPostList()
+        observeViewModel()
     }
 
     private fun initializeView() {
         rvPosts = findViewById(R.id.rv_posts)
-        rvPosts.apply {
-            layoutManager = GridLayoutManager(this@RecyclerViewActivity, 3)
-            adapter = RVAdapterPosts(postList)
+        loadingIndicator = findViewById(R.id.loading_indicator)
+        rvPosts.layoutManager = GridLayoutManager(this, 3)
+    }
+
+    private fun observeViewModel() {
+        viewModel.uiState.observe(this) { uiState ->
+            if (uiState.isLoading) {
+                showToast("Loading...")
+            } else {
+                if (uiState.transmissions.isEmpty()) {
+                    showToast("No transmissions available.")
+                } else {
+                    rvPosts.adapter = RVAdapterPosts(uiState.transmissions, this@RecyclerViewActivity)
+                    showToast("Data loaded successfully!")
+                }
+            }
+            if (!uiState.isListActive) {
+                showToast("List deactivated for ${uiState.deactivationTime} seconds")
+            } else {
+                showToast("List reactivated")
+            }
         }
     }
 
-    private fun fillPostList() {
-        val titles = listOf(
-            "Ninja", "Ibai", "auronplay", "Rubius", "KaiCenat", "xQc", "TheGrefg", "Tfue",
-            "juansguarnizo", "Shroud", "ElMariana", "ElSpreen", "Pokimane", "Sodapoppin",
-            "Clix", "Heelmike", "Tommyinnit", "Myth", "AdinRoss", "Alanzoka", "SypherPK",
-            "TimTheTatman", "AriGameplays", "Mongraal", "Riot Games", "NICKMERCS", "Quackity",
-            "ESLCS", "summit1g", "Amouranth", "Dream", "rivers_gg", "Jynxzi", "Fortnite",
-            "Robleis", "elded", "loud_coringa", "Bugha", "Moistcr1tikal", "NickEh30",
-            "MontanaBlack88", "loltyler1"
-        )
-        val imageResIds = listOf(
-            R.drawable.ninja, R.drawable.ibai, R.drawable.auronplay, R.drawable.rubius,
-            R.drawable.kaicenat, R.drawable.xqc, R.drawable.thegrefg, R.drawable.tfue,
-            R.drawable.juansguarnizo, R.drawable.shroud, R.drawable.elmariana, R.drawable.elspreen,
-            R.drawable.pokimane, R.drawable.sodapoppin, R.drawable.clix, R.drawable.heelmike,
-            R.drawable.tommyinnit, R.drawable.myth, R.drawable.adinross, R.drawable.alanzoka,
-            R.drawable.sypherpk, R.drawable.timthetatman, R.drawable.arigameplays, R.drawable.mongraal,
-            R.drawable.riotgames, R.drawable.nickmercs, R.drawable.quackity, R.drawable.eslcs,
-            R.drawable.summit1g, R.drawable.amouranth, R.drawable.dream, R.drawable.rivers_gg,
-            R.drawable.jynxzi, R.drawable.fortnite, R.drawable.robleis, R.drawable.elded,
-            R.drawable.loud_coringa, R.drawable.bugha, R.drawable.moistcr1tikal, R.drawable.nickeh30,
-            R.drawable.montanablack88, R.drawable.loltyler1
-        )
-        for (i in titles.indices) {
-            postList.add(Transmission(imageResIds[i], titles[i]))
-        }
+    fun disableListForSeconds(seconds: Int) {
+        viewModel.setListActive(false, seconds)
+        rvPosts.visibility = View.GONE
+        loadingIndicator.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            rvPosts.visibility = View.VISIBLE
+            loadingIndicator.visibility = View.GONE
+            viewModel.setListActive(true, 0)
+        }, (seconds * 1000).toLong())
     }
 }
